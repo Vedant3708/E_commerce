@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userrole: {
+        type: Number,
+        default:0
+    },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
