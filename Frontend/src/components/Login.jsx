@@ -5,7 +5,7 @@ import FormInput from './FormInput';
 
 const Login = () => {
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-lg">
+    <div className=" mx-auto w-2/5 h-3/5 mt-10 mb-10 p-4 bg-white shadow-md rounded-md">
       <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
       <Formik
         initialValues={{ aadhaar: '', password: '' }}
@@ -29,7 +29,7 @@ const Login = () => {
             <FormInput label="Password" name="password" type="password" />
             <button
               type="submit"
-              className="mt-4 w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              className="mx-auto block mt-4 w-1/2 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               Submit
             </button>
