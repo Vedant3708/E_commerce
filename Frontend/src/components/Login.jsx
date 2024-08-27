@@ -8,10 +8,16 @@ const Login = () => {
     <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
       <h1 className="text-2xl font-bold mb-4">Login</h1>
       <Formik
-        initialValues={{ email: '', password: '' }}
+        initialValues={{ aadhaar: '', password: '' }}
         validationSchema={Yup.object({
-          email: Yup.string().email('Invalid email address').required('Required'),
-          password: Yup.string().required('Required'),
+          aadhaar: Yup.string().matches(/^\d{12}$/, 'Aadhaar number must be a 12-digit number').required('Required'),
+          password: Yup.string()
+          .min(6, 'Password must be at least 6 characters')
+          .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+          .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+          .matches(/\d/, 'Password must contain at least one digit')
+          .matches(/[@$!%*?&#]/, 'Password must contain at least one special character')
+          .required('Required'),
         })}
         onSubmit={(values) => {
           console.log(values);
@@ -19,7 +25,7 @@ const Login = () => {
       >
         {() => (
           <Form>
-            <FormInput label="Email" name="email" type="email" />
+            <FormInput label="Aadhaar Number" name="aadhaar" type="text" />
             <FormInput label="Password" name="password" type="password" />
             <button
               type="submit"
