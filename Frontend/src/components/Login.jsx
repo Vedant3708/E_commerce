@@ -5,8 +5,8 @@ import FormInput from './FormInput';
 
 const Login = () => {
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-lg">
+      <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
       <Formik
         initialValues={{ aadhaar: '', password: '' }}
         validationSchema={Yup.object({
