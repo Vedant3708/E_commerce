@@ -11,9 +11,10 @@ const App = () => {
     <Router>
       <div className="min-h-screen bg-gray-50">
         <NavBar />
-        <Content />
+        {/* <Content /> */}
         <div className="container mx-auto p-4">
           <Routes>
+            <Route path="/" element={<Content />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
           </Routes>
