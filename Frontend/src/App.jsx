@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Content from './components/content';
+import Prisoners from './components/Prisoners';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         {/* <Content /> */}
         <div className="container mx-auto p-4">
           <Routes>
+            <Route path="/prisoners" element={<Prisoners />} />
             <Route path="/" element={<Content />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
