@@ -4,7 +4,7 @@ import contacts from "./contacts";
 function CreateCard({ contact, onClick, isActive }) {
   return (
     <div
-      className={`p-4 max-w-lg mx-auto bg-white rounded-xl shadow-md flex items-center space-y-4 my-4 cursor-pointer ${isActive ? "bg-blue-100" : ""}`}
+      className={`p-4 max-w-lg mx-auto bg-white rounded-xl shadow-md flex items-center space-y-4 my-4 cursor-pointer ${isActive ? "bg-blue-200" : ""}`}
       onClick={onClick}
     >
       <img

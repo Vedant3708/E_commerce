@@ -1,7 +1,7 @@
 import React from 'react'
 const Content = () => {
   return (
-<div className=' bg-gray-100 flex justify-start h-full'>
+<div className=' bg-gray-100 flex justify-start min-h-screen'>
     <div className='w-2/6 h-3/5 bg-white rounded-lg shadow-lg mt-6 ml-2 p-6'>
     <h2 className='text-2xl font-bold text-center mb-4'>Prisoner Information</h2>
     <div className='space-y-4'>
