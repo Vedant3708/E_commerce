@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Content from './components/content';
 import Prisoners from './components/Prisoners';
+import LegalAidProviderDashboard from './components/LegalAidProviderDashboard';
+import NewBailApplication from './components/NewBailApplication';
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
             <Route path="/" element={<Content />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/LegalAid" element={<LegalAidProviderDashboard userRole="Legal Aid Provider" />} />
+            
           </Routes>
         </div>
         <Footer />
