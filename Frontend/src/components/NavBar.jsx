@@ -8,6 +8,7 @@ const NavBar = () => {
         <div className='flex'>
           <h1 className="flex items-center text-white text-lg font-bold mr-8">BAIL</h1>
           <Link to="/" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Home</Link>
+          <Link to="/Content" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Content</Link>
           <p className='flex items-center text-white text-lg mr-3 ml-3'>Bail-Calculator</p>
           <p className='flex items-center text-white text-lg mr-3 ml-3'>Resources</p>
           <p className='flex items-center text-white text-lg mr-3 ml-3'>Contact us</p></div>
