@@ -1,187 +1,203 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Signup() {
-  const [role, setRole] = useState('');
+  const [aadhaar, setAadhaar] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const navigate = useNavigate();
+  const { signup } = useAuth();
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
+  const validate = () => {
+    let errors = {};
+    const aadhaarRegex = /^\d{12}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$/;
+
+    if (!aadhaar.match(aadhaarRegex)) {
+      errors.aadhaar = "Aadhaar number must be a 12-digit number";
+    }
+
+    if (!password.match(passwordRegex)) {
+      errors.password =
+        "Password must be at least 8 characters, with one uppercase, one lowercase, one digit, and one special character";
+    }
+
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords must match";
+    }
+
+    return errors;
   };
 
-  const validationSchema = Yup.object({
-    aadhaar: Yup.string()
-      .matches(/^\d{12}$/, 'Aadhaar number must be a 12-digit number')
-      .required('Required'),
-    password: Yup.string()
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[@$!%*?&#]/, 'Password must contain at least one special character')
-      .required('Required'),
-    prisonerId: role === 'Undertrial Prisoner' ? Yup.string().required('Required') : Yup.string(),
-    contact: role === 'Undertrial Prisoner' || role === 'Legal Aid Provider' || role === 'Judicial Authority'
-      ? Yup.string()
-          .matches(/^\d{10}$/, 'Phone number must be a 10-digit number')
-          .required('Required')
-      : Yup.string(),
-    email: role === 'Undertrial Prisoner' || role === 'Legal Aid Provider' || role === 'Judicial Authority'
-      ? Yup.string().email('Invalid email address').required('Required')
-      : Yup.string(),
-    organization: role === 'Legal Aid Provider' ? Yup.string().required('Required') : Yup.string(),
-    barId: role === 'Legal Aid Provider' ? Yup.string().required('Required') : Yup.string(),
-    courtName: role === 'Judicial Authority' ? Yup.string().required('Required') : Yup.string(),
-    judicialId: role === 'Judicial Authority' ? Yup.string().required('Required') : Yup.string(),
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setServerError("");
+    setIsSubmitting(true);
 
-  const initialValues = {
-    aadhaar: '',
-    password: '',
-    prisonerId: '',
-    contact: '',
-    email: '',
-    organization: '',
-    barId: '',
-    courtName: '',
-    judicialId: '',
-  };
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsSubmitting(false);
+      return;
+    }
 
-  const renderFormFields = () => {
-    return (
-      <>
+    let RoleId;
+    switch (role) {
+      case "Undertrial Prisoner":
+        RoleId = 1;
+        break;
+      case "Legal Aid Provider":
+        RoleId = 2;
+        break;
+      case "Judicial Authority":
+        RoleId = 3;
+        break;
+      default:
+        RoleId = 0;
+        break;
+    }
 
-        {role === 'Undertrial Prisoner' && (
-          <>
-            <div className="mb-4">
-              <label htmlFor="prisonerId" className="block text-sm font-medium text-gray-700">Prisoner ID/Registration Number</label>
-              <Field type="text" id="prisonerId" name="prisonerId" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="prisonerId" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="contact" className="block text-sm font-medium text-gray-700">Contact Information</label>
-              <Field type="text" id="contact" name="contact" placeholder="Phone Number" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="contact" component="div" className="text-red-500 text-sm mt-1" />
-              <Field type="email" id="email" name="email" placeholder="Email Address" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="caseInfo" className="block text-sm font-medium text-gray-700">Current Case Information (Optional)</label>
-              <Field as="textarea" id="caseInfo" name="caseInfo" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            </div>
-          </>
-        )}
+    try {
+      const data = await signup({
+        adharNo: aadhaar,
+        password: password,
+        userRole: RoleId,
+      });
+      console.log("Signup successful:", data);
+      alert("SignUp Successful!");
 
-        {role === 'Legal Aid Provider' && (
-          <>
-            <div className="mb-4">
-              <label htmlFor="organization" className="block text-sm font-medium text-gray-700">Law Firm/Organization Name</label>
-              <Field type="text" id="organization" name="organization" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="organization" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="barId" className="block text-sm font-medium text-gray-700">Bar Council ID/Legal Registration Number</label>
-              <Field type="text" id="barId" name="barId" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="barId" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="contact" className="block text-sm font-medium text-gray-700">Contact Information</label>
-              <Field type="text" id="contact" name="contact" placeholder="Phone Number" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="contact" component="div" className="text-red-500 text-sm mt-1" />
-              <Field type="email" id="email" name="email" placeholder="Email Address" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-          </>
-        )}
-
-        {role === 'Judicial Authority' && (
-          <>
-            <div className="mb-4">
-              <label htmlFor="courtName" className="block text-sm font-medium text-gray-700">Court/Judiciary Name</label>
-              <Field type="text" id="courtName" name="courtName" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="courtName" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="judicialId" className="block text-sm font-medium text-gray-700">Judicial ID Number</label>
-              <Field type="text" id="judicialId" name="judicialId" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="judicialId" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="contact" className="block text-sm font-medium text-gray-700">Contact Information</label>
-              <Field type="text" id="contact" name="contact" placeholder="Phone Number" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="contact" component="div" className="text-red-500 text-sm mt-1" />
-              <Field type="email" id="email" name="email" placeholder="Email Address" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-              <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
-            </div>
-          </>
-        )}
-
-        <div className="mb-4">
-          <label htmlFor="aadhaar" className="block text-sm font-medium text-gray-700">Aadhaar Number</label>
-          <Field type="text" id="aadhaar" name="aadhaar" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-          <ErrorMessage name="aadhaar" component="div" className="text-red-500 text-sm mt-1" />
-        </div>
-        <div className="mb-4">
-        <label htmlFor="aadhaarCard" className="block text-sm font-medium text-gray-700">Upload Aadhaar Card</label>
-        <input 
-          type="file" 
-          id="aadhaarCard" 
-          name="aadhaarCard" 
-          accept="image/*,application/pdf"
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        />
-        <ErrorMessage name="aadhaarCard" component="div" className="text-red-500 text-sm mt-1" />
-      </div>
-
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-          <Field type="password" id="password" name="password" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-          <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
-        </div>
-
-      </>
-    );
+      if (data.user.userRole === 1) {
+        navigate("/content");
+      } else if (data.user.userRole === 2) {
+        navigate("/LegalAid");
+      } else if (data.user.userRole === 3) {
+        navigate("/prisoners");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setServerError("Failed to sign up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-lg">
       <h1 className="text-2xl font-bold text-center mb-6">Signup</h1>
-      <div className="mb-4">
-        <label htmlFor="role" className="block text-sm font-medium text-gray-700">Select Role</label>
-        <select
-          id="role"
-          name="role"
-          value={role}
-          onChange={handleRoleChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="">Select your role</option>
-          <option value="Undertrial Prisoner">Undertrial Prisoner</option>
-          <option value="Legal Aid Provider">Legal Aid Provider</option>
-          <option value="Judicial Authority">Judicial Authority</option>
-        </select>
-      </div>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log(values);
-          // Handle form submission
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            {renderFormFields()}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              Submit
-            </button>
-          </Form>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label
+            htmlFor="role"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          >
+            <option value="">Select your role</option>
+            <option value="Undertrial Prisoner">Undertrial Prisoner</option>
+            <option value="Legal Aid Provider">Legal Aid Provider</option>
+            <option value="Judicial Authority">Judicial Authority</option>
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="aadhaar"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Aadhaar Number
+          </label>
+          <input
+            type="text"
+            id="aadhaar"
+            name="aadhaar"
+            value={aadhaar}
+            onChange={(e) => setAadhaar(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          {errors.aadhaar && (
+            <div className="text-red-500 text-sm mt-1">{errors.aadhaar}</div>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          {errors.password && (
+            <div className="text-red-500 text-sm mt-1">{errors.password}</div>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          {errors.confirmPassword && (
+            <div className="text-red-500 text-sm mt-1">
+              {errors.confirmPassword}
+            </div>
+          )}
+        </div>
+
+        {serverError && (
+          <div className="text-red-500 text-center text-sm mb-4">
+            {serverError}
+          </div>
         )}
-      </Formik>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
+        >
+          {isSubmitting ? "Submitting..." : "Submit"}
+        </button>
+
+        <div className="mt-4 text-center">
+          <p className="text-sm">
+            Already registered?{" "}
+            <a href="/login" className="text-indigo-600 hover:underline">
+              Login
+            </a>
+          </p>
+        </div>
+      </form>
     </div>
   );
 }

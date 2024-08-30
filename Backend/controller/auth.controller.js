@@ -1,70 +1,75 @@
-import User from '../model/user.model.js';
-import bcryptjs from 'bcryptjs';
-import { errorHandler } from '../utils/error.js';
-import jwt from 'jsonwebtoken';
+import User from "../model/user.model.js";
+import bcryptjs from "bcryptjs";
+import generateTokenandSetCookie from "../utils/generateTokenandSetCookie.js";
 
-
-export const signup = async (req, res, next) => {
-    const { username, adharno, password,phoneno } = req.body;
-    if (!username || !password || !adharno||!phoneno || username == ' ' || adharno == ' ' || password == ' '||phoneno == ' ') {
-         next(errorHandler(400, 'All fields are required'));
+export const signup = async (req, res) => {
+  try {
+    const { adharNo, password, userRole } = req.body;
+    if (!adharNo || !password || !userRole) {
+      return res.status(400).json({ error: "All fields are required!" });
     }
-
-    const hashPassword = bcryptjs.hashSync(password, 10);
-
+    const userExists = await User.findOne({ adharNo });
+    if (userExists) {
+      return res.status(400).json({ error: "User already exists!" });
+    }
+    const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = new User({
-        username,
-        adharno,
-        phoneno,
-        password: hashPassword,
+      adharNo,
+      password: hashedPassword,
+      userRole,
     });
-    try {
-        await newUser.save();
-        res.json('sucsess')
+    if (newUser) {
+      generateTokenandSetCookie(newUser._id, res);
+      await newUser.save();
+      const { password: pass, ...rest } = newUser._doc;
+      return res.status(201).json({
+        user: rest,
+      });
+    } else {
+      res.status(400).json({ error: "Invalid user data" });
     }
-    catch (error) {
-        next(error);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      message: "Error is server!",
+    });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { adharNo, password } = req.body;
+    if (!adharNo || !password) {
+      return res
+        .status(400)
+        .json({ error: "AdharNo and password are required" });
     }
-}
-
-
-export const signin = async (req, res, next) => {
-    const { adharno, password } = req.body;
-
-    if (!adharno || !password || password == '' || adharno == '') {
-        next(errorHandler(400, 'Adharno and password are required'));
+    const user = await User.findOne({ adharNo });
+    if (!user) {
+      return res.status(404).json({ error: "User not found, please Signup!" });
     }
-    
-    try {
-        const validUser = await User.findOne({ adharno });
-        if (!validUser) {
-           return next(errorHandler(400, 'invalid email or password'));
-        }
-        const validPassword = bcryptjs.compareSync(password, validUser.password);
-        if (!validPassword) {
-           return next(errorHandler(400, 'invalid email or password'));
-        }
-        const token = jwt.sign(
-            {
-                id: validUser._id,
-                userrole:validUser.userrole
-            }, process.env.JWT_SECRET
-
-
-        );
-
-        const { password: pass, ...rest } = validUser._doc;
-
-
-
-        res.status(200).cookie('access_token', token,{httpOnly: true,}).json(rest);
-
-
-    } 
-    
-    catch (error) {
-        next(error);
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid password" });
     }
-    
+    generateTokenandSetCookie(user._id, res);
+    const { password: pass, ...rest } = user._doc;
+    return res.status(200).json({
+      user: rest,
+    });
+  } catch (error) {
+    console.log("Error in signup controller", error.message);
+    return res.status(500).json({ error: "Internal Server error" });
+  }
+};
 
-}
+export const logout = async (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    return res.status(200).json({ message: "Logged out successfully!" });
+  } catch (error) {
+    console.log("Error in logout controller", error.message);
+    return res.status(500).json({ error: "Internal Server error" });
+  }
+};
