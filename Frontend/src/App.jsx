@@ -7,7 +7,6 @@ import SignupPage from './pages/SignupPage';
 import Content from './components/content';
 import Prisoners from './components/Prisoners';
 import LegalAidProviderDashboard from './components/LegalAidProviderDashboard';
-import NewBailApplication from './components/NewBailApplication';
 import Front from './components/front';
 const App = () => {
   return (
