@@ -27,7 +27,7 @@ const LegalAidProviderDashboard = ({ userRole }) => {
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white">
+      <div className="w-64 bg-gray-800 text-white rounded-lg">
         <div className="p-4 font-bold text-xl">Bail Reckoner</div>
         <ul className="space-y-4 p-4">
           <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setCurrentView("dashboard")}>

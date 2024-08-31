@@ -1,4 +1,4 @@
-const contacts = [
+const contactsdata = [
     {
         id: 1,
         name: "Beyonce",
@@ -16,7 +16,8 @@ const contacts = [
         property: "Private property with gated entrance",
         place: "Near Houston Downtown",
         distance: "3 miles from Houston City Center",
-        direction: "North"
+        direction: "North",
+        accepted: true
     },
     {
         id: 2,
@@ -35,7 +36,8 @@ const contacts = [
         property: "Secured perimeter, surveillance cameras, CTU-issued weaponry",
         place: "CTU Headquarters, Los Angeles",
         distance: "10 miles from downtown Los Angeles",
-        direction: "South-West"
+        direction: "South-West",
+        accepted: false
     },  
     {
         id: 3,
@@ -54,10 +56,11 @@ const contacts = [
         property: "Nunchucks, 3 Katanas",
         place: "Martial Arts Academy, Austin",
         distance: "5 miles from Austin City Center",
-        direction: "North-East"
+        direction: "North-East",
+        accepted: false
     }
       
   ];
   
-  export default contacts;
+  export default contactsdata;
   
