@@ -14,6 +14,9 @@ import Prisoners from "./components/Prisoners";
 import LegalAidProviderDashboard from "./components/LegalAidProviderDashboard";
 import NewBailApplication from "./components/NewBailApplication";
 import Front from "./components/Front";
+import Resources from "./components/resources";
+import Contact from "./components/contactus";
+import Cal from "./components/bailcal";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -30,6 +33,14 @@ const App = () => {
                 element={
                   <PrivateRoute userRole={1}>
                     <Content />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/bailcal"
+                element={
+                  <PrivateRoute userRole={1}>
+                    <Cal />
                   </PrivateRoute>
                 }
               />
@@ -52,6 +63,8 @@ const App = () => {
               <Route path="/" element={<Front />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/contactUs" element={<Contact />} />
               <Route path="*" element={<Navigate to="/" />} />{" "}
             </Routes>
           </div>

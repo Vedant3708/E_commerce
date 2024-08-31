@@ -24,15 +24,25 @@ const NavBar = () => {
             <h1 className="text-white text-lg font-bold">LibertyLedger</h1>
           </Link>
 
-          <p className="flex items-center text-white text-lg mr-3 ml-3">
-            Bail-Calculator
-          </p>
-          <p className="flex items-center text-white text-lg mr-3 ml-3">
+          {/* <p className="flex items-center text-white text-lg mr-3 ml-3">
             Resources
           </p>
           <p className="flex items-center text-white text-lg mr-3 ml-3">
             Contact us
-          </p>
+          </p> */}
+
+          <Link
+            to="/resources"
+            className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded"
+          >
+            Resources
+          </Link>
+          <Link
+            to="/contactUs"
+            className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded"
+          >
+            Contact us
+          </Link>
         </div>
         <div className="flex items-center relative">
           {user ? (
