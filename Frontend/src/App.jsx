@@ -8,6 +8,9 @@ import Content from './components/content';
 import Prisoners from './components/Prisoners';
 import LegalAidProviderDashboard from './components/LegalAidProviderDashboard';
 import Front from './components/front';
+import Resources from './components/resources';
+import Contact from './components/contactus';
+import Cal from './components/bailcal';
 const App = () => {
   return (
     <Router>
@@ -19,6 +22,9 @@ const App = () => {
           <Routes>
             <Route path="/prisoners" element={<Prisoners userRole="Judicial Authority"/>} />
             <Route path="/" element={<Front />} />
+            <Route path="/resources" element={<Resources/>} />
+            <Route path="/contact" element={<Contact/>} />
+            <Route path="/bailcal" element={<Cal/>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/LegalAid" element={<LegalAidProviderDashboard userRole="Legal Aid Provider" />} />

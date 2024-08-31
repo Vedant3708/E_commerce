@@ -9,9 +9,10 @@ const NavBar = () => {
           <h1 className="flex items-center text-white text-lg font-bold mr-8">BAIL</h1>
           <Link to="/" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Home</Link>
           <Link to="/Content" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Content</Link>
-          <p className='flex items-center text-white text-lg mr-3 ml-3'>Bail-Calculator</p>
-          <p className='flex items-center text-white text-lg mr-3 ml-3'>Resources</p>
-          <p className='flex items-center text-white text-lg mr-3 ml-3'>Contact us</p></div>
+          <Link to="/bailcal" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Bail Calculator</Link>
+          <Link to="/resources" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Resources</Link>
+          <Link to="/contact" className="text-white text-lg px-4 py-2 hover:bg-indigo-700 rounded">Contact us</Link>
+          </div>
         <div className='flex items-center'>
           <Link to="/prisoners" className="text-white px-4 py-2 hover:bg-indigo-700 rounded">Prisoners</Link>
           <Link to="/login" className="text-white px-4 py-2 hover:bg-indigo-700 rounded">Login</Link>
