@@ -106,14 +106,3 @@ npm run dev
 - [Rounak Maurya](https://github.com/rgmhacks)
 - [Naman Gosain](https://github.com/ng10op)
 
-## 📱Screenshots
-1. User
-  - Company Suggestions
-    ![img](https://i.imgur.com/86jKjZq.png)
-  - Course Rcomnedations
-    ![img](https://i.imgur.com/T7I154d.png)
-2. Recruiter
-  - Recruiter Input Field
-    ![img](https://i.imgur.com/fVilT3Z.png)
-  - Results 
-    ![img](https://i.imgur.com/YDn6xpF.png)
