@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import JudgeHearings from "./JudgeHearings";
 import CreateCard from "./Createcard";
-import contactsdata from './Data/contactsdata';
+import contactsdata from "./Data/contactsdata";
 
 const Prisoners = ({ userRole }) => {
   const [activeContactId, setActiveContactId] = useState(null);
   const [currentView, setCurrentView] = useState("applications");
 
   const [contacts, setContacts] = useState(contactsdata);
-
-  if (userRole !== "Judicial Authority") {
-    return <p>You do not have access to this page.</p>;
-  }
 
   const handleCardClick = (id) => {
     setActiveContactId(id === activeContactId ? null : id); // Toggle on click
@@ -31,11 +27,17 @@ const Prisoners = ({ userRole }) => {
       <div className="w-64 bg-gray-800 text-white rounded-lg">
         <div className="p-4 font-bold text-xl">Bail Reckoner</div>
         <ul className="space-y-4 p-4">
-          <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setCurrentView("applications")}>
+          <li
+            className="hover:bg-gray-700 p-2 rounded cursor-pointer"
+            onClick={() => setCurrentView("applications")}
+          >
             Home
           </li>
-          <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => setCurrentView("hearings")}>
-            My Hearings 
+          <li
+            className="hover:bg-gray-700 p-2 rounded cursor-pointer"
+            onClick={() => setCurrentView("hearings")}
+          >
+            My Hearings
           </li>
           <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">
             Profile Settings
@@ -47,19 +49,17 @@ const Prisoners = ({ userRole }) => {
           {contacts
             .filter((contact) => !contact.accepted) // Filter out already accepted contacts
             .map((contact) => (
-            <CreateCard
-              key={contact.id}
-              contact={contact}
-              onClick={() => handleCardClick(contact.id)}
-              onAccept={() => handleAcceptClick(contact.id)} // Pass the accept handler
-              isActive={activeContactId === contact.id}
-            />
-          ))}
+              <CreateCard
+                key={contact.id}
+                contact={contact}
+                onClick={() => handleCardClick(contact.id)}
+                onAccept={() => handleAcceptClick(contact.id)} // Pass the accept handler
+                isActive={activeContactId === contact.id}
+              />
+            ))}
         </div>
       )}
-      {currentView === "hearings" && (
-        <JudgeHearings />
-      )}
+      {currentView === "hearings" && <JudgeHearings />}
     </div>
   );
 };

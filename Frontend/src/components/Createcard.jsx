@@ -1,16 +1,15 @@
-import React, {useState} from "react";
-import Judgement from './Judgement';
-
+import React, { useState } from "react";
+import Judgement from "./Judgement";
 
 function CreateCard({ contact, onClick, onAccept, isActive }) {
-    // State to control the visibility of the form modal
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  // State to control the visibility of the form modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Function to open the modal
-    const openModal = () => setIsModalOpen(true);
-  
-    // Function to close the modal
-    const closeModal = () => setIsModalOpen(false);
+  // Function to open the modal
+  const openModal = () => setIsModalOpen(true);
+
+  // Function to close the modal
+  const closeModal = () => setIsModalOpen(false);
   return (
     <>
       <div
@@ -26,7 +25,9 @@ function CreateCard({ contact, onClick, onAccept, isActive }) {
             alt={contact.name}
           />
           <div className="mx-4">
-            <h2 className="text-xl font-semibold text-gray-900">{contact.name}</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              {contact.name}
+            </h2>
             <p className="text-gray-500">{contact.email}</p>
             <p className="text-gray-500">{contact.phone}</p>
 
@@ -34,12 +35,22 @@ function CreateCard({ contact, onClick, onAccept, isActive }) {
               <div className="mt-2">
                 {/* Show additional information here */}
                 <p className="text-gray-700">Address: {contact.address}</p>
-                <p className="text-gray-700">Police Station: {contact.police_station}</p>
-                <p className="text-gray-700">Date & Hour: {contact.date_and_hour}</p>
-                <p className="text-gray-700">Informer: {contact.name_informer}</p>
-                <p className="text-gray-700">Residence: {contact.residence_informer}</p>
+                <p className="text-gray-700">
+                  Police Station: {contact.police_station}
+                </p>
+                <p className="text-gray-700">
+                  Date & Hour: {contact.date_and_hour}
+                </p>
+                <p className="text-gray-700">
+                  Informer: {contact.name_informer}
+                </p>
+                <p className="text-gray-700">
+                  Residence: {contact.residence_informer}
+                </p>
                 <p className="text-gray-700">Complaint: {contact.complaint}</p>
-                <p className="text-gray-700">Description: {contact.description}</p>
+                <p className="text-gray-700">
+                  Description: {contact.description}
+                </p>
                 <p className="text-gray-700">Property: {contact.property}</p>
                 <p className="text-gray-700">Place: {contact.place}</p>
                 <p className="text-gray-700">Distance: {contact.distance}</p>
@@ -62,7 +73,7 @@ function CreateCard({ contact, onClick, onAccept, isActive }) {
           </button>
         )}
         {contact.accepted && (
-          <button 
+          <button
             onClick={(e) => {
               e.stopPropagation(); // Prevent triggering the parent div's onClick
               openModal(); // Open the modal when clicked
@@ -81,4 +92,3 @@ function CreateCard({ contact, onClick, onAccept, isActive }) {
 }
 
 export default CreateCard;
-

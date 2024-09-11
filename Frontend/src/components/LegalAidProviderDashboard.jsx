@@ -65,14 +65,8 @@ const LegalAidProviderDashboard = ({ userRole }) => {
     setEditingCaseId(null); // Exit editing mode
   };
 
-  if (userRole !== "Legal Aid Provider") {
-    return <p>You do not have access to this page.</p>;
-  }
-
   // Separate ongoing and past cases
-  const ongoingCases = cases.filter(
-    (caseItem) => caseItem.status !== "Closed"
-  );
+  const ongoingCases = cases.filter((caseItem) => caseItem.status !== "Closed");
   const pastCases = cases.filter((caseItem) => caseItem.status === "Closed");
 
   return (
@@ -99,7 +93,7 @@ const LegalAidProviderDashboard = ({ userRole }) => {
           >
             New Bail Application
           </li>
-          
+
           <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">
             Profile Settings
           </li>
@@ -111,9 +105,6 @@ const LegalAidProviderDashboard = ({ userRole }) => {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Welcome, Advocate Kranti</h1>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
-            Logout
-          </button>
         </div>
 
         {/* Conditional Rendering based on currentView */}
@@ -195,9 +186,7 @@ const LegalAidProviderDashboard = ({ userRole }) => {
                   key={caseItem.id}
                   className="bg-gray-200 p-4 rounded shadow"
                 >
-                  <h3 className="text-xl font-semibold">
-                    {caseItem.caseName}
-                  </h3>
+                  <h3 className="text-xl font-semibold">{caseItem.caseName}</h3>
                   <p className="text-gray-600">Status: {caseItem.status}</p>
                   <p className="text-gray-600">
                     Next Hearing: {caseItem.nextHearing}
