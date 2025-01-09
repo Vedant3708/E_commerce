@@ -8,8 +8,7 @@ const ContactUs = () => {
       </h1>
       <p className="text-lg mb-6 text-gray-700">
         We are here to assist you with any questions or concerns you may have
-        about bail procedures and legal advice. Feel free to reach out to us
-        through the contact details below.
+        about our products.
       </p>
 
       <div className="bg-white p-6 rounded-lg shadow-lg w-2/5 mx-auto">
