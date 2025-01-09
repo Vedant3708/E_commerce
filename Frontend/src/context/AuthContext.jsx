@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Admin login function
-  const login = async (userData) => {
+  const login = async (userData, navigate) => {
     try {
       // Sample hardcoded credentials for verification
       const sampleUsername = "admin";
@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
       alert(error.message);
     }
   };
+  
   
 
   const logout = async () => {

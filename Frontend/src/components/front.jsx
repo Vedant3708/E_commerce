@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 const Front = () => {
   const { user } = useAuth(); // Get the logged-in user
   const [clothes, setClothes] = useState([]);
-  const [newCloth, setNewCloth] = useState({ name: '', brand: '', size: '', price: '', image: '' });
+  const [newCloth, setNewCloth] = useState({ name: '', brand: '', size: '', price: '', imageUrl: '' });
 
   // Fetch clothes from the backend
   useEffect(() => {
@@ -39,7 +39,7 @@ const Front = () => {
         const addedCloth = await response.json();
         setClothes([...clothes, addedCloth]);
         // Reset the newCloth state to clear the form after adding a cloth
-        setNewCloth({ name: '', brand: '', size: '', price: '', image: '' });
+        setNewCloth({ name: '', brand: '', size: '', price: '', imageUrl: '' });
       }
     } catch (error) {
       console.error('Error adding cloth:', error);
@@ -139,8 +139,8 @@ const Front = () => {
               <label className="block font-semibold mb-1">Image URL</label>
               <input
                 type="text"
-                name="image"
-                value={newCloth.image}
+                name="imageUrl"
+                value={newCloth.imageUrl}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded"
                 required

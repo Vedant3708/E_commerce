@@ -4,14 +4,16 @@ import Item from "../model/Item.js";
 // CREATE: Add new item
 router.post('/', async (req, res) => {
   try {
-    console.log("Received data");
+    console.log("Received data:", req.body); // Log the data received in the request
     const newItem = new Item(req.body);
     await newItem.save();
     res.status(201).json(newItem); // Send back the created item
   } catch (error) {
+    console.error("Error saving item:", error); // Log the error to debug
     res.status(400).json({ message: error.message });
   }
 });
+
 
 // READ: Get all items
 router.get('/', async (req, res) => {
