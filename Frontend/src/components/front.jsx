@@ -1,63 +1,158 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+
 const Front = () => {
+  const { user } = useAuth(); // Get the logged-in user
+  const [clothes, setClothes] = useState([]);
+  const [newCloth, setNewCloth] = useState({ name: '', brand: '', size: '', price: '', image: '' });
+
+  // Fetch clothes from the backend
+  useEffect(() => {
+    const fetchClothes = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/clothes');
+        const data = await response.json();
+        setClothes(data);
+      } catch (error) {
+        console.error('Error fetching clothes:', error);
+      }
+    };
+    fetchClothes();
+  }, []);
+
+  // Handle input changes for new cloth form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewCloth({ ...newCloth, [name]: value });
+  };
+
+  // Add a new cloth item (Admin only)
+  const handleAddCloth = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/api/clothes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCloth),
+      });
+      if (response.ok) {
+        const addedCloth = await response.json();
+        setClothes([...clothes, addedCloth]);
+        // Reset the newCloth state to clear the form after adding a cloth
+        setNewCloth({ name: '', brand: '', size: '', price: '', image: '' });
+      }
+    } catch (error) {
+      console.error('Error adding cloth:', error);
+    }
+  };
+
+  // Delete a cloth item (Admin only)
+  const handleDeleteCloth = async (id) => {
+    try {
+      await fetch(`http://localhost:5000/api/clothes/${id}`, { method: 'DELETE' });
+      setClothes(clothes.filter((cloth) => cloth._id !== id));
+    } catch (error) {
+      console.error('Error deleting cloth:', error);
+    }
+  };
+
   return (
     <main className="flex-grow p-6 bg-gray-100">
-    <section className="text-center mb-8">
-      <h2 className="text-3xl font-semibold mb-4 text-blue-700">Welcome to Bail Recknor</h2>
-      <p className="text-lg mb-6">
-        Your trusted partner in bail and legal support services. We provide comprehensive assistance to help navigate the bail process efficiently and effectively.
-      </p>
-      <p className="text-lg mb-6">
-        Whether you're a prisoner in need of support, a legal aid provider, or someone looking for information, we've got you covered.
-      </p>
-      <Link to="/signup" className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-        Get Started
-      </Link>
-    </section>
+      <section className="text-center mb-8">
+        <p className="text-lg mb-6">Check out our latest collection of jeans and shirts!</p>
+      </section>
 
-    <section className="text-center">
-      <h3 className="text-xl font-semibold mb-4 text-blue-700">Our Services</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="service-card bg-white p-4 shadow-md rounded">
-          <h4 className="text-md font-semibold mb-2">Bail Assistance</h4>
-          <p>Expert help to understand and manage bail processes.</p>
-        </div>
-        <div className="service-card bg-white p-4 shadow-md rounded">
-          <h4 className="text-md font-semibold mb-2">Legal Advice</h4>
-          <p>Consult with experienced legal professionals for guidance.</p>
-        </div>
-        <div className="service-card bg-white p-4 shadow-md rounded">
-          <h4 className="text-md font-semibold mb-2">Prisoner Support</h4>
-          <p>Resources and assistance for prisoners and their families.</p>
-        </div>
-      </div>
-    </section>
-    <section className="text-center mb-12 bg-gray-100 p-6 rounded-lg">
-        <h3 className="text-2xl font-semibold mb-4 text-blue-800">What Our Clients Say</h3>
-        <div className="flex flex-col items-center space-y-6">
-          <blockquote className="bg-white p-4 shadow-md rounded-lg max-w-md">
-            <p className="text-gray-600">"Bail Recknor provided exceptional support during a challenging time. Their expertise and compassion made all the difference." - Jane D.</p>
-          </blockquote>
-          <blockquote className="bg-white p-4 shadow-md rounded-lg max-w-md">
-            <p className="text-gray-600">"The legal advice I received was clear and actionable. I felt well-informed and supported throughout the process." - John S.</p>
-          </blockquote>
+      {/* Display clothes */}
+      <section className="text-center">
+        <h3 className="text-xl font-semibold mb-4 text-blue-700">Our Collection</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {clothes.map((cloth) => (
+            <div key={cloth._id} className="service-card bg-white p-4 shadow-md rounded">
+              <img src={cloth.image} alt={cloth.name} className="w-full h-40 object-cover mb-2 rounded" />
+              <h4 className="text-md font-semibold mb-2">{cloth.name}</h4>
+              <p>Brand: {cloth.brand}</p>
+              <p>Size: {cloth.size}</p>
+              <p>Price: ₹{cloth.price}</p>
+              {user && user.role === 'admin' && (
+                <button
+                  onClick={() => handleDeleteCloth(cloth._id)}
+                  className="mt-2 bg-red-600 text-white py-1 px-2 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </section>
-      <section className=" mb-7">
-        <h3 className="text-2xl ml-60 font-semibold mb-6 text-blue-800">Frequently Asked Questions</h3>
-        <div className="bg-white p-6 shadow-lg rounded-lg max-w-3xl mx-auto">
-          <div className="mb-4">
-            <h4 className="text-lg font-semibold text-blue-700">What is bail assistance?</h4>
-            <p className="text-gray-600">Bail assistance involves helping individuals understand and manage the bail process, ensuring they can secure release from custody as efficiently as possible.</p>
-          </div>
-          <div className="mb-4">
-            <h4 className="text-lg font-semibold text-blue-700">How can I get legal advice?</h4>
-            <p className="text-gray-600">You can get legal advice by scheduling a consultation with our experienced legal professionals who will guide you through your case.</p>
-          </div>
-        </div>
-      </section>
-  </main>
+
+      {/* Add new cloth form (Admin only) */}
+      {user && user.role === 'admin' && (
+        <section className="mt-8 bg-white p-6 shadow-lg rounded-lg max-w-3xl mx-auto">
+          <h3 className="text-2xl font-semibold mb-4 text-blue-800">Add New Cloth</h3>
+          <form onSubmit={handleAddCloth}>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={newCloth.name}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Brand</label>
+              <input
+                type="text"
+                name="brand"
+                value={newCloth.brand}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Size</label>
+              <input
+                type="text"
+                name="size"
+                value={newCloth.size}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Price (₹)</label>
+              <input
+                type="number"
+                name="price"
+                value={newCloth.price}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Image URL</label>
+              <input
+                type="text"
+                name="image"
+                value={newCloth.image}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Add Cloth
+            </button>
+          </form>
+        </section>
+      )}
+    </main>
   );
 };
 

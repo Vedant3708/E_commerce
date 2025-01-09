@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Signup() {
-  const [aadhaar, setAadhaar] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -15,12 +14,11 @@ function Signup() {
 
   const validate = () => {
     let errors = {};
-    const aadhaarRegex = /^\d{12}$/;
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$/;
 
-    if (!aadhaar.match(aadhaarRegex)) {
-      errors.aadhaar = "Aadhaar number must be a 12-digit number";
+    if (!username.trim()) {
+      errors.username = "Username is required";
     }
 
     if (!password.match(passwordRegex)) {
@@ -48,38 +46,16 @@ function Signup() {
       return;
     }
 
-    let RoleId;
-    switch (role) {
-      case "Undertrial Prisoner":
-        RoleId = 1;
-        break;
-      case "Legal Aid Provider":
-        RoleId = 2;
-        break;
-      case "Judicial Authority":
-        RoleId = 3;
-        break;
-      default:
-        RoleId = 0;
-        break;
-    }
-
     try {
       const data = await signup({
-        adharNo: aadhaar,
-        password: password,
-        userRole: RoleId,
+        username,
+        password,
+        role: "admin",
       });
-      console.log("Signup successful:", data);
-      alert("SignUp Successful!");
 
-      if (data.user.userRole === 1) {
-        navigate("/content");
-      } else if (data.user.userRole === 2) {
-        navigate("/LegalAid");
-      } else if (data.user.userRole === 3) {
-        navigate("/prisoners");
-      }
+      console.log("Signup successful:", data);
+      alert("Signup successful!");
+      navigate("/admin-dashboard");
     } catch (error) {
       console.error("Error during signup:", error);
       setServerError("Failed to sign up. Please try again later.");
@@ -90,46 +66,25 @@ function Signup() {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-lg">
-      <h1 className="text-2xl font-bold text-center mb-6">Signup</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">Admin Signup</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
-            htmlFor="role"
+            htmlFor="username"
             className="block text-sm font-medium text-gray-700"
           >
-            Role
-          </label>
-          <select
-            id="role"
-            name="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-          >
-            <option value="">Select your role</option>
-            <option value="Undertrial Prisoner">Undertrial Prisoner</option>
-            <option value="Legal Aid Provider">Legal Aid Provider</option>
-            <option value="Judicial Authority">Judicial Authority</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label
-            htmlFor="aadhaar"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Aadhaar Number
+            Username
           </label>
           <input
             type="text"
-            id="aadhaar"
-            name="aadhaar"
-            value={aadhaar}
-            onChange={(e) => setAadhaar(e.target.value)}
+            id="username"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
-          {errors.aadhaar && (
-            <div className="text-red-500 text-sm mt-1">{errors.aadhaar}</div>
+          {errors.username && (
+            <div className="text-red-500 text-sm mt-1">{errors.username}</div>
           )}
         </div>
 

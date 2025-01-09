@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    adharNo: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -10,11 +10,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-    },
-    userRole: {
-      type: Number,
-      default: 0,
-    },
+    }
   },
   { timestamps: true }
 );
